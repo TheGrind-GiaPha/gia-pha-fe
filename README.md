@@ -77,7 +77,7 @@ gia-pha-fe/
 ### 3.1. Cài dependencies
 
 ```powershell
-cd C:\Users\ThienNLH3\Desktop\gia-pha-fe
+cd C:\Users\ThienNLH3\Desktop\TheGrind-GiaPha\gia-pha-fe
 npm install
 ```
 
@@ -97,10 +97,10 @@ VITE_API_BASE_URL=http://localhost:5000/api
 
 ### 3.3. Chạy backend trước
 
-Backend repo: `C:\Users\ThienNLH3\Desktop\gia-pha-be`
+Backend repo: `C:\Users\ThienNLH3\Desktop\TheGrind-GiaPha\gia-pha-be`
 
 ```powershell
-cd C:\Users\ThienNLH3\Desktop\gia-pha-be
+cd C:\Users\ThienNLH3\Desktop\TheGrind-GiaPha\gia-pha-be
 dotnet run --project APIs/GiaPha.APIs.csproj
 ```
 
@@ -109,7 +109,7 @@ API chạy ở `http://localhost:5000`; Swagger ở `/swagger`.
 ### 3.4. Chạy frontend
 
 ```powershell
-cd C:\Users\ThienNLH3\Desktop\gia-pha-fe
+cd C:\Users\ThienNLH3\Desktop\TheGrind-GiaPha\gia-pha-fe
 npm run dev
 ```
 
