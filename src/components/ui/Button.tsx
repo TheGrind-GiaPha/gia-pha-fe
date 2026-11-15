@@ -1,4 +1,4 @@
-import type { ButtonHTMLAttributes } from 'react'
+﻿import type { ButtonHTMLAttributes } from 'react'
 import { Loader2 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
@@ -12,11 +12,11 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 }
 
 const variantClasses: Record<ButtonVariant, string> = {
-  primary: 'bg-brand-700 text-white hover:bg-brand-800 focus-visible:ring-brand-200 shadow-sm',
+  primary: 'bg-brand-700 text-white hover:bg-brand-800 focus-visible:ring-brand-200',
   secondary:
-    'border border-stone-300 bg-white text-stone-700 hover:bg-stone-50 focus-visible:ring-stone-200',
-  ghost: 'text-stone-600 hover:bg-stone-100 focus-visible:ring-stone-200',
-  danger: 'bg-red-600 text-white hover:bg-red-700 focus-visible:ring-red-200',
+    'border border-stone-300 bg-white text-stone-800 hover:bg-stone-50 focus-visible:ring-stone-200',
+  ghost: 'text-stone-700 hover:bg-stone-100 focus-visible:ring-stone-200',
+  danger: 'bg-red-700 text-white hover:bg-red-800 focus-visible:ring-red-200',
 }
 
 const sizeClasses: Record<ButtonSize, string> = {
@@ -36,7 +36,7 @@ export function Button({
   return (
     <button
       className={cn(
-        'inline-flex items-center justify-center gap-2 rounded-xl font-medium transition focus:outline-none focus-visible:ring-4 disabled:cursor-not-allowed disabled:opacity-60',
+        'inline-flex items-center justify-center gap-2 rounded transition-colors focus:outline-none focus-visible:ring-2 disabled:cursor-not-allowed disabled:opacity-50',
         variantClasses[variant],
         sizeClasses[size],
         className,

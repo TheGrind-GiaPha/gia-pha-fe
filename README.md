@@ -6,9 +6,11 @@ Frontend khung cho **VGMS**, dựng theo proposal:
 - **React Router** cho routing
 - **TanStack Query** cho server state
 - **Axios** cho API client
-- **Tailwind CSS** + **Lucide React** cho UI
+- **Tailwind CSS**, icon Lucide chỉ dùng cho chức năng (menu/loading)
 
-> Trạng thái: **Skeleton**. Đã có layout, routing, trang Tổng quan, trang Dòng họ gọi API thật, các trang placeholder cho Person/Tree/Approval/Events/Settings. Auth, Person, Tree, Approval workflow sẽ làm ở các task tiếp theo.
+> Trạng thái: **Skeleton**. Đã có layout, routing, trang Dòng họ gọi API thật, các trang placeholder cho Person/Tree/Approval/Events/Settings. Auth, Person, Tree, Approval workflow sẽ làm ở các task tiếp theo.
+>
+> **UI tối giản:** không card, hero, stat card, icon trang trí. Đọc contract ở `../gia-pha-docs/02-kien-truc.md` §7.8 trước khi thêm màn hình/component.
 
 ---
 
@@ -22,7 +24,7 @@ Frontend khung cho **VGMS**, dựng theo proposal:
 | Server state | TanStack Query 5                 |
 | HTTP         | Axios                            |
 | Styling      | Tailwind CSS 3                   |
-| Icons        | Lucide React                     |
+| Icons        | Lucide React (chức năng)         |
 | Test         | Vitest + Testing Library + jsdom |
 | Lint         | Oxlint                           |
 | Format       | Prettier                         |
@@ -38,11 +40,10 @@ gia-pha-fe/
 │   │   └── router.tsx               # Khai báo route
 │   ├── components/
 │   │   ├── layout/AppLayout.tsx     # Sidebar + header + Outlet
-│   │   └── ui/                      # Button, Card, Badge, PageHeader...
+│   │   └── ui/                      # Button, PageHeader, EmptyState, PlaceholderPage
 │   ├── features/
 │   │   ├── auth/LoginPage.tsx       # Placeholder, chờ task Auth/JWT
 │   │   ├── clans/ClansPage.tsx      # Gọi GET/POST /api/clans
-│   │   ├── dashboard/               # Tổng quan
 │   │   ├── persons/                 # Placeholder
 │   │   ├── tree/                    # Placeholder
 │   │   ├── approvals/               # Placeholder
@@ -121,7 +122,7 @@ Mở <http://localhost:5173>.
 
 | Route        | Màn hình                | Trạng thái        |
 | ------------ | ----------------------- | ----------------- |
-| `/`          | Tổng quan               | Có, gọi API clans |
+| `/`          | Redirect → `/clans`     | Có                |
 | `/clans`     | Danh sách + tạo dòng họ | Có, gọi API thật  |
 | `/persons`   | Thành viên              | Placeholder       |
 | `/tree`      | Cây phả hệ              | Placeholder       |

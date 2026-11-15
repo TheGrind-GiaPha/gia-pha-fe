@@ -1,9 +1,8 @@
-import { createBrowserRouter } from 'react-router-dom'
+import { createBrowserRouter, Navigate } from 'react-router-dom'
 import { AppLayout } from '@/components/layout/AppLayout'
 import { ApprovalsPage } from '@/features/approvals/ApprovalsPage'
 import { LoginPage } from '@/features/auth/LoginPage'
 import { ClansPage } from '@/features/clans/ClansPage'
-import { DashboardPage } from '@/features/dashboard/DashboardPage'
 import { EventsPage } from '@/features/events/EventsPage'
 import { NotFoundPage } from '@/features/not-found/NotFoundPage'
 import { PersonsPage } from '@/features/persons/PersonsPage'
@@ -19,7 +18,7 @@ export const router = createBrowserRouter([
     path: '/',
     element: <AppLayout />,
     children: [
-      { index: true, element: <DashboardPage /> },
+      { index: true, element: <Navigate to="/clans" replace /> },
       { path: 'clans', element: <ClansPage /> },
       { path: 'persons', element: <PersonsPage /> },
       { path: 'tree', element: <TreePage /> },

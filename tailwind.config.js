@@ -18,11 +18,7 @@ export default {
         },
       },
       fontFamily: {
-        sans: ['Inter', 'system-ui', 'Segoe UI', 'Roboto', 'sans-serif'],
-        serif: ['Georgia', 'Cambria', 'Times New Roman', 'serif'],
-      },
-      boxShadow: {
-        soft: '0 18px 50px -24px rgba(28, 61, 52, 0.35)',
+        sans: ['Noto Sans', 'Segoe UI', 'Arial', 'system-ui', 'sans-serif'],
       },
     },
   },

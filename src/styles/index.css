@@ -1,16 +1,15 @@
-@tailwind base;
+﻿@tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @layer base {
   html {
     -webkit-font-smoothing: antialiased;
-    text-rendering: optimizeLegibility;
   }
 
   body {
-    @apply bg-stone-50 text-stone-900;
-    font-family: Inter, system-ui, 'Segoe UI', Roboto, sans-serif;
+    @apply bg-[#fbfaf7] text-stone-900;
+    font-family: 'Noto Sans', 'Segoe UI', Arial, system-ui, sans-serif;
   }
 
   ::selection {
@@ -20,18 +19,10 @@
 
 @layer components {
   .field-label {
-    @apply mb-1.5 block text-sm font-medium text-stone-700;
+    @apply mb-1 block text-sm text-stone-700;
   }
 
   .text-input {
-    @apply w-full rounded-xl border border-stone-300 bg-white px-3.5 py-2.5 text-sm text-stone-900 shadow-sm outline-none transition placeholder:text-stone-400 focus:border-brand-500 focus:ring-4 focus:ring-brand-100;
-  }
-
-  .surface {
-    @apply rounded-2xl border border-stone-200/80 bg-white shadow-sm;
-  }
-
-  .muted {
-    @apply text-sm text-stone-500;
+    @apply w-full rounded border border-stone-300 bg-white px-3 py-2.5 text-base text-stone-900 outline-none focus:border-brand-600 focus:ring-2 focus:ring-brand-100;
   }
 }
