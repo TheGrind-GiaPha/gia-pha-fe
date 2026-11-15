@@ -66,16 +66,18 @@ export function TreePage() {
           </button>
         </div>
       ) : tree ? (
-        <ul>
-          <TreeNode
-            node={tree}
-            depth={0}
-            onAddChild={(person) => setAction({ type: 'addChild', person })}
-            onMove={(person) => setAction({ type: 'move', person })}
-            onMerge={(person) => setAction({ type: 'merge', person })}
-            onDelete={(person) => setAction({ type: 'delete', person })}
-          />
-        </ul>
+        <div className="overflow-x-auto pb-10">
+          <ul className="family-tree">
+            <TreeNode
+              node={tree}
+              depth={0}
+              onAddChild={(person) => setAction({ type: 'addChild', person })}
+              onMove={(person) => setAction({ type: 'move', person })}
+              onMerge={(person) => setAction({ type: 'merge', person })}
+              onDelete={(person) => setAction({ type: 'delete', person })}
+            />
+          </ul>
+        </div>
       ) : null}
 
       <Modal open={action !== null} title={modalTitle(action)} onClose={() => setAction(null)}>

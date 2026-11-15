@@ -26,3 +26,54 @@
     @apply w-full rounded border border-stone-300 bg-white px-3 py-2.5 text-base text-stone-900 outline-none focus:border-brand-600 focus:ring-2 focus:ring-brand-100;
   }
 }
+
+/* Cây phả đồ (family tree) — connector lines thuần CSS */
+.family-tree ul {
+  @apply relative flex justify-center gap-4 pt-6;
+}
+
+.family-tree li {
+  @apply relative flex list-none flex-col items-center px-2 pt-6;
+}
+
+/* Đường dọc nối cha xuống hàng con */
+.family-tree ul ul::before {
+  content: '';
+  @apply absolute left-1/2 top-0 h-6 border-l border-stone-300;
+}
+
+/* Đường ngang nối các anh em + nhánh dọc xuống từng node */
+.family-tree li::before,
+.family-tree li::after {
+  content: '';
+  @apply absolute right-1/2 top-0 h-6 w-1/2 border-t border-stone-300;
+}
+
+.family-tree li::after {
+  right: auto;
+  left: 50%;
+  @apply border-l;
+}
+
+.family-tree li:only-child::before,
+.family-tree li:only-child::after {
+  display: none;
+}
+
+.family-tree li:only-child {
+  padding-top: 0;
+}
+
+.family-tree li:first-child::before,
+.family-tree li:last-child::after {
+  border: 0 none;
+}
+
+.family-tree li:last-child::before {
+  @apply border-r;
+  border-radius: 0 6px 0 0;
+}
+
+.family-tree li:first-child::after {
+  border-radius: 6px 0 0 0;
+}
