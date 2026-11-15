@@ -7,7 +7,7 @@ import { getClans } from '@/lib/api/clans'
 import { getApiErrorMessage } from '@/lib/api/errors'
 import { getTree } from '@/lib/api/persons'
 import type { Person, PersonNode } from '@/types/person'
-import { TreeNode } from './TreeNode'
+import { TreeCanvas } from './TreeCanvas'
 import { AddChildForm, DeletePersonForm, MergePersonsForm, MovePersonForm } from './TreeForms'
 
 type TreeAction =
@@ -68,22 +68,15 @@ export function TreePage() {
       ) : tree ? (
         <div className="space-y-2">
           <p className="text-xs text-stone-500">
-            Bấm vào thẻ để thu gọn / mở rộng nhánh. Dấu (… ) nghĩa là còn nhân vật chưa đưa vào.
+            Kéo để di chuyển, lăn chuột để zoom. Dấu (… ) nghĩa là còn nhân vật chưa đưa vào.
           </p>
-          <div className="overflow-x-auto pb-10">
-            <div className="family-tree">
-              <ul>
-                <TreeNode
-                  node={tree}
-                  depth={0}
-                  onAddChild={(person) => setAction({ type: 'addChild', person })}
-                  onMove={(person) => setAction({ type: 'move', person })}
-                  onMerge={(person) => setAction({ type: 'merge', person })}
-                  onDelete={(person) => setAction({ type: 'delete', person })}
-                />
-              </ul>
-            </div>
-          </div>
+          <TreeCanvas
+            tree={tree}
+            onAddChild={(person) => setAction({ type: 'addChild', person })}
+            onMove={(person) => setAction({ type: 'move', person })}
+            onMerge={(person) => setAction({ type: 'merge', person })}
+            onDelete={(person) => setAction({ type: 'delete', person })}
+          />
         </div>
       ) : null}
 
