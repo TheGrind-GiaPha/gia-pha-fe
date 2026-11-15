@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest'
-import { buildAuditQuery } from './historyFilters'
+import type { AuditLog } from '@/types/audit'
+import { buildAuditQuery, canRestoreLog } from './historyFilters'
 
 describe('buildAuditQuery', () => {
   it('uses the selected person instead of the entity type filter', () => {
@@ -47,5 +48,53 @@ describe('buildAuditQuery', () => {
 
     expect(query.entityType).toBe('Clan')
     expect(query.entityId).toBeUndefined()
+  })
+})
+
+describe('canRestoreLog', () => {
+  const base: AuditLog = {
+    id: 'log-1',
+    clanId: 'clan-1',
+    entityType: 'Clan',
+    entityId: 'clan-1',
+    action: 'Update',
+    actionLabel: 'Cập nhật',
+    actorLabel: 'Hệ thống',
+    batchId: 'batch-1',
+    summary: 'Cập nhật dòng họ A',
+    changes: [
+      {
+        field: 'name',
+        label: 'Tên dòng họ',
+        before: 'Tên cũ',
+        after: 'Tên mới',
+      },
+    ],
+    occurredAt: '2026-11-15T00:00:00Z',
+  }
+
+  it('allows restoring a simple field update', () => {
+    expect(canRestoreLog(base)).toBe(true)
+  })
+
+  it('rejects structural updates', () => {
+    expect(
+      canRestoreLog({
+        ...base,
+        changes: [
+          {
+            field: 'status',
+            label: 'Trạng thái',
+            before: 'Bản nháp',
+            after: 'Đã công bố',
+          },
+        ],
+      }),
+    ).toBe(false)
+  })
+
+  it('rejects create and delete logs', () => {
+    expect(canRestoreLog({ ...base, action: 'Create' })).toBe(false)
+    expect(canRestoreLog({ ...base, action: 'Delete' })).toBe(false)
   })
 })

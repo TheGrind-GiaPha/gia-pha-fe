@@ -1,4 +1,6 @@
-import type { AuditQuery } from '@/types/audit'
+import type { AuditLog, AuditQuery } from '@/types/audit'
+
+const structuralFields = new Set(['status', 'mergedIntoId', 'path', 'generation'])
 
 export interface HistoryFilterInput {
   personId: string
@@ -18,6 +20,14 @@ export function buildAuditQuery(input: HistoryFilterInput): AuditQuery {
     from: toIso(input.fromDate, false),
     to: toIso(input.toDate, true),
   }
+}
+
+export function canRestoreLog(log: AuditLog): boolean {
+  return (
+    log.action === 'Update' &&
+    log.changes.length > 0 &&
+    log.changes.every((change) => !structuralFields.has(change.field))
+  )
 }
 
 function toIso(value: string, endOfDay: boolean): string | undefined {

@@ -1,16 +1,16 @@
 import { useState } from 'react'
-import { useQuery } from '@tanstack/react-query'
+import { useMutation, useQuery } from '@tanstack/react-query'
 import { Button } from '@/components/ui/Button'
 import { EmptyState } from '@/components/ui/EmptyState'
 import { PageHeader } from '@/components/ui/PageHeader'
-import { getClanAudit } from '@/lib/api/audit'
+import { getClanAudit, restoreAuditLog } from '@/lib/api/audit'
 import { getClans } from '@/lib/api/clans'
 import { getApiErrorMessage } from '@/lib/api/errors'
 import { getTree } from '@/lib/api/persons'
 import { flattenTree } from '@/lib/personTree'
 import { cn, formatDateTime } from '@/lib/utils'
 import type { AuditLog } from '@/types/audit'
-import { buildAuditQuery } from './historyFilters'
+import { buildAuditQuery, canRestoreLog } from './historyFilters'
 
 const pageSize = 10
 
@@ -21,6 +21,8 @@ export function HistoryPage() {
   const [fromDate, setFromDate] = useState('')
   const [toDate, setToDate] = useState('')
   const [page, setPage] = useState(1)
+  const [actionMessage, setActionMessage] = useState<string | null>(null)
+  const [actionError, setActionError] = useState<string | null>(null)
 
   const clansQuery = useQuery({
     queryKey: ['clans'],
@@ -43,6 +45,19 @@ export function HistoryPage() {
     enabled: Boolean(clanId),
   })
 
+  const restoreMutation = useMutation({
+    mutationFn: (logId: string) => restoreAuditLog(clanId, logId),
+    onSuccess: (result) => {
+      setActionMessage(result.message)
+      setActionError(null)
+      void auditQuery.refetch()
+    },
+    onError: (error) => {
+      setActionMessage(null)
+      setActionError(getApiErrorMessage(error))
+    },
+  })
+
   const persons = treeQuery.data ? flattenTree(treeQuery.data) : []
   const data = auditQuery.data
   const totalPages = data?.totalPages ?? 0
@@ -54,6 +69,8 @@ export function HistoryPage() {
     setFromDate('')
     setToDate('')
     setPage(1)
+    setActionMessage(null)
+    setActionError(null)
   }
 
   function handlePersonChange(value: string) {
@@ -168,6 +185,16 @@ export function HistoryPage() {
         </div>
       </section>
 
+      {actionMessage ? (
+        <p className="border-l-2 border-emerald-600 pl-3 text-sm text-emerald-800">
+          {actionMessage}
+        </p>
+      ) : null}
+
+      {actionError ? (
+        <p className="border-l-2 border-red-600 pl-3 text-sm text-red-800">{actionError}</p>
+      ) : null}
+
       {clansQuery.isError ? (
         <div className="border-l-2 border-red-600 pl-3 text-sm text-red-800">
           <p>{getApiErrorMessage(clansQuery.error)}</p>
@@ -216,7 +243,21 @@ export function HistoryPage() {
 
           <div className="space-y-4">
             {data.items.map((log) => (
-              <AuditCard key={log.id} log={log} />
+              <AuditCard
+                key={log.id}
+                log={log}
+                canRestore={canRestoreLog(log)}
+                isRestoring={restoreMutation.isPending && restoreMutation.variables === log.id}
+                onRestore={(logId) => {
+                  if (
+                    window.confirm(
+                      'Khôi phục thay đổi này? Dữ liệu hiện tại sẽ trở về giá trị trước đó.',
+                    )
+                  ) {
+                    restoreMutation.mutate(logId)
+                  }
+                }}
+              />
             ))}
           </div>
         </>
@@ -230,14 +271,38 @@ export function HistoryPage() {
   )
 }
 
-function AuditCard({ log }: { log: AuditLog }) {
+function AuditCard({
+  log,
+  canRestore,
+  isRestoring,
+  onRestore,
+}: {
+  log: AuditLog
+  canRestore: boolean
+  isRestoring: boolean
+  onRestore: (logId: string) => void
+}) {
   return (
     <article className="border border-stone-200 bg-white p-4">
-      <div className="flex flex-wrap items-center gap-2">
-        <span className={cn('rounded-full px-2 py-0.5 text-xs', actionClass(log.action))}>
-          {log.actionLabel}
-        </span>
-        <h2 className="text-sm text-stone-900">{log.summary}</h2>
+      <div className="flex flex-wrap items-start justify-between gap-2">
+        <div className="flex flex-wrap items-center gap-2">
+          <span className={cn('rounded-full px-2 py-0.5 text-xs', actionClass(log.action))}>
+            {log.actionLabel}
+          </span>
+          <h2 className="text-sm text-stone-900">{log.summary}</h2>
+        </div>
+
+        {canRestore ? (
+          <Button
+            type="button"
+            variant="secondary"
+            size="sm"
+            isLoading={isRestoring}
+            onClick={() => onRestore(log.id)}
+          >
+            Khôi phục
+          </Button>
+        ) : null}
       </div>
 
       <p className="mt-1 text-xs text-stone-500">

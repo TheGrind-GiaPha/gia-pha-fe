@@ -1,5 +1,5 @@
 import { apiClient } from '@/lib/api/client'
-import type { AuditPage, AuditQuery } from '@/types/audit'
+import type { AuditPage, AuditQuery, RestoreResult } from '@/types/audit'
 
 export async function getClanAudit(
   clanId: string,
@@ -20,6 +20,17 @@ export async function getPersonHistory(
   const { data } = await apiClient.get<AuditPage>(
     `/clans/${clanId}/persons/${personId}/history`,
     { params },
+  )
+
+  return data
+}
+
+export async function restoreAuditLog(
+  clanId: string,
+  logId: string,
+): Promise<RestoreResult> {
+  const { data } = await apiClient.post<RestoreResult>(
+    `/clans/${clanId}/audit/${logId}/restore`,
   )
 
   return data

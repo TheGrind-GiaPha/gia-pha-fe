@@ -38,3 +38,8 @@ export interface AuditQuery {
   page?: number
   pageSize?: number
 }
+
+export interface RestoreResult {
+  logId: string
+  message: string
+}
