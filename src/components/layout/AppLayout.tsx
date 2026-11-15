@@ -1,6 +1,7 @@
 ﻿import { useState } from 'react'
-import { Link, NavLink, Outlet } from 'react-router-dom'
+import { Link, NavLink, Outlet, useNavigate } from 'react-router-dom'
 import { Menu, X } from 'lucide-react'
+import { clearAuth, getStoredUser } from '@/lib/auth'
 import { cn } from '@/lib/utils'
 
 const navigation = [
@@ -9,12 +10,20 @@ const navigation = [
   { to: '/tree', label: 'Cây phả hệ' },
   { to: '/history', label: 'Lịch sử' },
   { to: '/approvals', label: 'Duyệt đề xuất' },
+  { to: '/roles', label: 'Phân quyền' },
   { to: '/events', label: 'Sự kiện & giỗ' },
   { to: '/settings', label: 'Cài đặt' },
 ]
 
 export function AppLayout() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false)
+  const navigate = useNavigate()
+  const user = getStoredUser()
+
+  function handleLogout() {
+    clearAuth()
+    navigate('/login', { replace: true })
+  }
 
   return (
     <div className="min-h-screen">
@@ -68,9 +77,23 @@ export function AppLayout() {
         </nav>
 
         <div className="border-t border-stone-300 p-4">
-          <Link to="/login" className="text-sm text-brand-700 hover:underline">
-            Đăng nhập
-          </Link>
+          {user ? (
+            <div className="space-y-1">
+              <p className="text-sm text-stone-900">{user.displayName}</p>
+              <p className="truncate text-xs text-stone-500">{user.email}</p>
+              <button
+                type="button"
+                onClick={handleLogout}
+                className="text-sm text-brand-700 hover:underline"
+              >
+                Đăng xuất
+              </button>
+            </div>
+          ) : (
+            <Link to="/login" className="text-sm text-brand-700 hover:underline">
+              Đăng nhập
+            </Link>
+          )}
         </div>
       </aside>
 
@@ -87,9 +110,19 @@ export function AppLayout() {
           <Link to="/" className="text-lg text-stone-900">
             VGMS
           </Link>
-          <Link to="/login" className="ml-auto text-sm text-brand-700 hover:underline">
-            Đăng nhập
-          </Link>
+          {user ? (
+            <button
+              type="button"
+              onClick={handleLogout}
+              className="ml-auto text-sm text-brand-700 hover:underline"
+            >
+              Đăng xuất
+            </button>
+          ) : (
+            <Link to="/login" className="ml-auto text-sm text-brand-700 hover:underline">
+              Đăng nhập
+            </Link>
+          )}
         </header>
 
         <main className="mx-auto w-full max-w-5xl px-4 py-8 sm:px-6 lg:px-8">
