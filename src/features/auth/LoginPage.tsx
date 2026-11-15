@@ -123,7 +123,7 @@ export function LoginPage() {
       </button>
 
       <Link to="/public" className="mt-6 text-sm text-brand-700 hover:underline">
-        Xem các dòng họ công khai (không cần đăng nhập)
+        Xem dòng họ công khai
       </Link>
 
       <Link to="/" className="mt-3 text-sm text-stone-500 hover:text-stone-800">

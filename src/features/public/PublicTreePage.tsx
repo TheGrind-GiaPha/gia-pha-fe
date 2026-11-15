@@ -31,10 +31,6 @@ export function PublicTreePage() {
       ) : data ? (
         <PublicTreeCanvas tree={data} />
       ) : null}
-
-      <p className="mt-4 text-xs text-stone-500">
-        Dữ liệu công khai đã ẩn thông tin nhạy cảm của người còn sống.
-      </p>
     </main>
   )
 }

@@ -13,9 +13,6 @@ export function PublicClansPage() {
   return (
     <main className="mx-auto w-full max-w-3xl px-4 py-12 sm:px-6">
       <h1 className="text-3xl text-stone-900">Dòng họ công khai</h1>
-      <p className="mt-2 text-sm text-stone-600">
-        Khách có thể xem cây phả hệ của các dòng họ đã bật công khai, không cần đăng nhập.
-      </p>
 
       {isLoading ? (
         <p className="mt-6 text-sm text-stone-500">Đang tải...</p>
@@ -37,7 +34,7 @@ export function PublicClansPage() {
           ))}
         </ul>
       ) : (
-        <EmptyState title="Chưa có dòng họ công khai" description="Hiện chưa dòng họ nào bật chế độ công khai." />
+        <EmptyState title="Chưa có dòng họ công khai" description="Chưa có dòng họ nào được công khai." />
       )}
 
       <Link to="/login" className="mt-8 inline-block text-sm text-stone-500 hover:text-stone-800">
