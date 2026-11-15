@@ -7,6 +7,7 @@ const navigation = [
   { to: '/clans', label: 'Dòng họ' },
   { to: '/persons', label: 'Thành viên' },
   { to: '/tree', label: 'Cây phả hệ' },
+  { to: '/history', label: 'Lịch sử' },
   { to: '/approvals', label: 'Duyệt đề xuất' },
   { to: '/events', label: 'Sự kiện & giỗ' },
   { to: '/settings', label: 'Cài đặt' },
