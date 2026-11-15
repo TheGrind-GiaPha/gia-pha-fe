@@ -4,6 +4,7 @@ import { hierarchy, tree as d3Tree } from 'd3-hierarchy'
 import '@xyflow/react/dist/style.css'
 import type { Person, PersonNode } from '@/types/person'
 import { PersonNodeCard, type PersonFlowNode } from './PersonNodeCard'
+import { TreeEdge } from './TreeEdge'
 
 const NODE_WIDTH = 224
 const NODE_HEIGHT = 176
@@ -18,8 +19,9 @@ interface TreeCanvasProps {
   onDelete: (person: Person) => void
 }
 
-// Phải khai báo ngoài component để React Flow không tạo lại nodeTypes mỗi render.
+// Phải khai báo ngoài component để React Flow không tạo lại mỗi render.
 const nodeTypes = { person: PersonNodeCard }
+const edgeTypes = { tree: TreeEdge }
 
 export function TreeCanvas({ tree, onAddChild, onMove, onMerge, onDelete }: TreeCanvasProps) {
   const { nodes, edges } = useMemo(() => {
@@ -40,8 +42,8 @@ export function TreeCanvas({ tree, onAddChild, onMove, onMerge, onDelete }: Tree
       id: `${link.source.data.person.id}-${link.target.data.person.id}`,
       source: link.source.data.person.id,
       target: link.target.data.person.id,
-      type: 'smoothstep',
-      style: { stroke: '#a8a29e', strokeWidth: 1.5 },
+      type: 'tree',
+      style: { stroke: '#d6d3d1', strokeWidth: 1 },
     }))
 
     return { nodes: flowNodes, edges: flowEdges }
@@ -53,6 +55,7 @@ export function TreeCanvas({ tree, onAddChild, onMove, onMerge, onDelete }: Tree
         nodes={nodes}
         edges={edges}
         nodeTypes={nodeTypes}
+        edgeTypes={edgeTypes}
         fitView
         fitViewOptions={{ padding: 0.2 }}
         minZoom={0.15}
