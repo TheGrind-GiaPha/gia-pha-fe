@@ -4,9 +4,10 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { Button } from '@/components/ui/Button'
 import { EmptyState } from '@/components/ui/EmptyState'
 import { PageHeader } from '@/components/ui/PageHeader'
-import { createClan, getClans } from '@/lib/api/clans'
+import { createClan, getClans, publishClan } from '@/lib/api/clans'
 import { getApiErrorMessage } from '@/lib/api/errors'
-import { formatDate } from '@/lib/utils'
+import { cn, formatDate } from '@/lib/utils'
+import { ClanStatus, clanStatusLabel } from '@/types/clan'
 
 export function ClansPage() {
   const queryClient = useQueryClient()
@@ -15,6 +16,7 @@ export function ClansPage() {
   const [name, setName] = useState('')
   const [description, setDescription] = useState('')
   const [formError, setFormError] = useState<string | null>(null)
+  const [actionError, setActionError] = useState<string | null>(null)
 
   const {
     data: clans,
@@ -37,6 +39,17 @@ export function ClansPage() {
     },
     onError: (mutationError) => {
       setFormError(getApiErrorMessage(mutationError))
+    },
+  })
+
+  const publishMutation = useMutation({
+    mutationFn: publishClan,
+    onSuccess: () => {
+      setActionError(null)
+      void queryClient.invalidateQueries({ queryKey: ['clans'] })
+    },
+    onError: (mutationError) => {
+      setActionError(getApiErrorMessage(mutationError))
     },
   })
 
@@ -125,6 +138,10 @@ export function ClansPage() {
             </div>
           </div>
 
+          {actionError ? (
+            <p className="mt-4 border-l-2 border-red-600 pl-3 text-sm text-red-800">{actionError}</p>
+          ) : null}
+
           {isLoading ? (
             <p className="mt-4 text-sm text-stone-500">Đang tải dữ liệu...</p>
           ) : isError ? (
@@ -138,11 +155,47 @@ export function ClansPage() {
             <ul className="mt-4 divide-y divide-stone-200">
               {clans.map((clan) => (
                 <li key={clan.id} className="py-4">
-                  <h3 className="text-sm text-stone-900">{clan.name}</h3>
-                  <p className="mt-1 text-sm leading-6 text-stone-600">
-                    {clan.description ?? 'Chưa có mô tả.'}
-                  </p>
-                  <p className="mt-1 text-xs text-stone-500">Tạo ngày {formatDate(clan.createdAt)}</p>
+                  <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+                    <div>
+                      <div className="flex flex-wrap items-center gap-2">
+                        <h3 className="text-sm text-stone-900">{clan.name}</h3>
+                        <span
+                          className={cn(
+                            'rounded-full px-2 py-0.5 text-xs',
+                            clan.status === ClanStatus.Published
+                              ? 'bg-emerald-50 text-emerald-700'
+                              : 'bg-amber-50 text-amber-700',
+                          )}
+                        >
+                          {clanStatusLabel(clan.status)}
+                        </span>
+                      </div>
+                      <p className="mt-1 text-sm leading-6 text-stone-600">
+                        {clan.description ?? 'Chưa có mô tả.'}
+                      </p>
+                      <p className="mt-1 text-xs text-stone-500">
+                        Tạo ngày {formatDate(clan.createdAt)}
+                        {clan.publishedAt ? ` · Công bố ${formatDate(clan.publishedAt)}` : ''}
+                      </p>
+                      {clan.status === ClanStatus.Published ? (
+                        <p className="mt-1 text-xs text-emerald-700">
+                          Đã công bố — thay đổi phải gửi đề xuất để duyệt.
+                        </p>
+                      ) : null}
+                    </div>
+
+                    {clan.status !== ClanStatus.Published ? (
+                      <Button
+                        type="button"
+                        size="sm"
+                        variant="secondary"
+                        isLoading={publishMutation.isPending && publishMutation.variables === clan.id}
+                        onClick={() => publishMutation.mutate(clan.id)}
+                      >
+                        Công bố
+                      </Button>
+                    ) : null}
+                  </div>
                 </li>
               ))}
             </ul>

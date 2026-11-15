@@ -1,6 +1,8 @@
 import axios from 'axios'
 
-interface ProblemDetails {
+interface ApiError {
+  code?: string
+  message?: string
   title?: string
   detail?: string
   status?: number
@@ -8,8 +10,8 @@ interface ProblemDetails {
 
 export function getApiErrorMessage(error: unknown): string {
   if (axios.isAxiosError(error)) {
-    const data = error.response?.data as ProblemDetails | undefined
-    return data?.detail ?? data?.title ?? 'Không kết nối được API.'
+    const data = error.response?.data as ApiError | undefined
+    return data?.message ?? data?.detail ?? data?.title ?? 'Không kết nối được API.'
   }
 
   if (error instanceof Error) {
