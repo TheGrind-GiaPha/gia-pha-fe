@@ -190,7 +190,15 @@ export function ClansPage() {
                         size="sm"
                         variant="secondary"
                         isLoading={publishMutation.isPending && publishMutation.variables === clan.id}
-                        onClick={() => publishMutation.mutate(clan.id)}
+                        onClick={() => {
+                          if (
+                            window.confirm(
+                              'Công bố dòng họ? Sau khi công bố, mọi thay đổi phải gửi đề xuất để duyệt.',
+                            )
+                          ) {
+                            publishMutation.mutate(clan.id)
+                          }
+                        }}
                       >
                         Công bố
                       </Button>
