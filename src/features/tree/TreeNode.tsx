@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import type { ReactNode } from 'react'
-import { ArrowRight, ChevronDown, ChevronRight, GitMerge, Plus, Trash2 } from 'lucide-react'
+import { ArrowRight, ChevronDown, ChevronRight, GitMerge, Plus, Trash2, User } from 'lucide-react'
 import { resolvePortraitUrl } from '@/lib/api/persons'
 import type { Person, PersonNode } from '@/types/person'
 
@@ -14,12 +14,17 @@ interface TreeNodeProps {
 }
 
 export function TreeNode({ node, depth, onAddChild, onMove, onMerge, onDelete }: TreeNodeProps) {
-  const [expanded, setExpanded] = useState(depth < 2)
+  // Chỉ mở tới đời 2 mặc định; các nhánh lớn (vd 27 con của Minh Mạng) thu gọn.
+  const [expanded, setExpanded] = useState(depth < 1)
   const { person } = node
   const hasChildren = node.children.length > 0
   const portrait = resolvePortraitUrl(person.portraitUrl)
   const birthYear = person.birthDate?.year
   const deathYear = person.deathDate?.year
+
+  // "Nguyễn Phúc Ánh (Gia Long)" -> hiển thị "Gia Long"; tên đầy đủ xem khi hover.
+  const titleMatch = person.fullName.match(/\(([^)]+)\)/)
+  const displayName = titleMatch ? titleMatch[1] : person.fullName
 
   return (
     <li>
@@ -28,7 +33,8 @@ export function TreeNode({ node, depth, onAddChild, onMove, onMerge, onDelete }:
           type="button"
           onClick={() => setExpanded((value) => !value)}
           disabled={!hasChildren}
-          className="w-40 cursor-pointer rounded-lg border border-stone-200 bg-white p-3 text-center shadow-sm transition-shadow hover:shadow disabled:cursor-default"
+          className="w-44 cursor-pointer rounded-lg border border-stone-200 bg-white p-3 text-center shadow-sm transition-shadow hover:shadow disabled:cursor-default"
+          title={person.fullName}
           aria-label={`${person.fullName}, đời ${person.generation}`}
         >
           {portrait ? (
@@ -38,12 +44,12 @@ export function TreeNode({ node, depth, onAddChild, onMove, onMerge, onDelete }:
               className="mx-auto h-16 w-16 rounded-full object-cover"
             />
           ) : (
-            <span className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-brand-100 text-xl text-brand-800">
-              {person.fullName.charAt(0)}
+            <span className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-stone-100 text-stone-400">
+              <User className="h-7 w-7" />
             </span>
           )}
 
-          <p className="mt-2 truncate text-sm font-medium text-stone-900">{person.fullName}</p>
+          <p className="mt-2 truncate text-sm font-medium text-stone-900">{displayName}</p>
           <p className="text-xs text-stone-500">
             Đời {person.generation}
             {birthYear || deathYear ? ` · ${birthYear ?? '?'}–${deathYear ?? '?'}` : ''}

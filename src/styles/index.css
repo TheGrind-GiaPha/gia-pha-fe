@@ -27,7 +27,7 @@
   }
 }
 
-/* Cây phả đồ (family tree) — connector lines thuần CSS */
+/* Phả đồ dàn ngang: gốc trên cùng, các đời nối bằng đường kẻ CSS */
 .family-tree ul {
   @apply relative flex justify-center gap-4 pt-6;
 }
