@@ -14,8 +14,8 @@ interface TreeNodeProps {
 }
 
 export function TreeNode({ node, depth, onAddChild, onMove, onMerge, onDelete }: TreeNodeProps) {
-  // Chỉ mở tới đời 2 mặc định; các nhánh lớn (vd 27 con của Minh Mạng) thu gọn.
-  const [expanded, setExpanded] = useState(depth < 1)
+  // Mở sẵn toàn bộ cây (dữ liệu đã rút gọn còn 32 người nên đủ gọn).
+  const [expanded, setExpanded] = useState(true)
   const { person } = node
   const hasChildren = node.children.length > 0
   const portrait = resolvePortraitUrl(person.portraitUrl)
@@ -86,7 +86,7 @@ export function TreeNode({ node, depth, onAddChild, onMove, onMerge, onDelete }:
       </div>
 
       {expanded && hasChildren ? (
-        <ul className="family-tree">
+        <ul>
           {node.children.map((child) => (
             <TreeNode
               key={child.person.id}
