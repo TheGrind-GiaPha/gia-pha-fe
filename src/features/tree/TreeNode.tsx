@@ -58,8 +58,13 @@ export function TreeNode({ node, depth, onAddChild, onMove, onMerge, onDelete }:
           {hasChildren ? (
             <span className="mt-1 inline-flex items-center justify-center text-stone-400">
               {expanded ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
-              <span className="text-xs">({node.children.length})</span>
+              <span className="text-xs">
+                ({node.children.length}
+                {person.hasHiddenChildren ? '+…' : ''})
+              </span>
             </span>
+          ) : person.hasHiddenChildren ? (
+            <span className="mt-1 text-xs text-stone-400">(…)</span>
           ) : null}
         </button>
 

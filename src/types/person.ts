@@ -17,6 +17,7 @@ export interface Person {
   generation: number
   path: string
   portraitUrl?: string | null
+  hasHiddenChildren?: boolean
 }
 
 export interface PersonNode {
