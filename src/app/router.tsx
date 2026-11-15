@@ -5,6 +5,8 @@ import { ApprovalsPage } from '@/features/approvals/ApprovalsPage'
 import { LoginPage } from '@/features/auth/LoginPage'
 import { ClansPage } from '@/features/clans/ClansPage'
 import { EventsPage } from '@/features/events/EventsPage'
+import { ExportPage } from '@/features/export/ExportPage'
+import { ImportPage } from '@/features/import/ImportPage'
 import { NotFoundPage } from '@/features/not-found/NotFoundPage'
 import { PersonsPage } from '@/features/persons/PersonsPage'
 import { PublicClansPage } from '@/features/public/PublicClansPage'
@@ -38,6 +40,8 @@ export const router = createBrowserRouter([
       { path: 'clans', element: <ClansPage /> },
       { path: 'persons', element: <PersonsPage /> },
       { path: 'tree', element: <TreePage /> },
+      { path: 'import', element: <ImportPage /> },
+      { path: 'export', element: <ExportPage /> },
       { path: 'approvals', element: <ApprovalsPage /> },
       { path: 'roles', element: <RolesPage /> },
       { path: 'events', element: <EventsPage /> },
