@@ -9,6 +9,7 @@ const navigation = [
   { to: '/persons', label: 'Thành viên' },
   { to: '/tree', label: 'Cây phả hệ' },
   { to: '/approvals', label: 'Duyệt đề xuất' },
+  { to: '/roles', label: 'Phân quyền' },
   { to: '/events', label: 'Sự kiện & giỗ' },
   { to: '/settings', label: 'Cài đặt' },
 ]

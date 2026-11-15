@@ -9,6 +9,7 @@ import { NotFoundPage } from '@/features/not-found/NotFoundPage'
 import { PersonsPage } from '@/features/persons/PersonsPage'
 import { PublicClansPage } from '@/features/public/PublicClansPage'
 import { PublicTreePage } from '@/features/public/PublicTreePage'
+import { RolesPage } from '@/features/roles/RolesPage'
 import { SettingsPage } from '@/features/settings/SettingsPage'
 import { TreePage } from '@/features/tree/TreePage'
 
@@ -38,6 +39,7 @@ export const router = createBrowserRouter([
       { path: 'persons', element: <PersonsPage /> },
       { path: 'tree', element: <TreePage /> },
       { path: 'approvals', element: <ApprovalsPage /> },
+      { path: 'roles', element: <RolesPage /> },
       { path: 'events', element: <EventsPage /> },
       { path: 'settings', element: <SettingsPage /> },
       { path: '*', element: <NotFoundPage /> },
