@@ -122,7 +122,11 @@ export function LoginPage() {
         {mode === 'login' ? 'Chưa có tài khoản? Đăng ký' : 'Đã có tài khoản? Đăng nhập'}
       </button>
 
-      <Link to="/" className="mt-6 text-sm text-stone-500 hover:text-stone-800">
+      <Link to="/public" className="mt-6 text-sm text-brand-700 hover:underline">
+        Xem các dòng họ công khai (không cần đăng nhập)
+      </Link>
+
+      <Link to="/" className="mt-3 text-sm text-stone-500 hover:text-stone-800">
         Về trang chính
       </Link>
     </main>

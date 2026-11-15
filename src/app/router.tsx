@@ -7,6 +7,8 @@ import { ClansPage } from '@/features/clans/ClansPage'
 import { EventsPage } from '@/features/events/EventsPage'
 import { NotFoundPage } from '@/features/not-found/NotFoundPage'
 import { PersonsPage } from '@/features/persons/PersonsPage'
+import { PublicClansPage } from '@/features/public/PublicClansPage'
+import { PublicTreePage } from '@/features/public/PublicTreePage'
 import { SettingsPage } from '@/features/settings/SettingsPage'
 import { TreePage } from '@/features/tree/TreePage'
 
@@ -14,6 +16,14 @@ export const router = createBrowserRouter([
   {
     path: '/login',
     element: <LoginPage />,
+  },
+  {
+    path: '/public',
+    element: <PublicClansPage />,
+  },
+  {
+    path: '/public/:clanId',
+    element: <PublicTreePage />,
   },
   {
     path: '/',
