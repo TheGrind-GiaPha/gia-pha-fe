@@ -1,5 +1,19 @@
-﻿import { PlaceholderPage } from '@/components/ui/PlaceholderPage'
-
-export function EventsPage() {
-  return <PlaceholderPage title="Sự kiện & giỗ" />
+import { useState } from 'react'
+import { Link } from 'react-router-dom'
+import { useQuery } from '@tanstack/react-query'
+import { getClans } from '@/lib/api/clans'
+import { apiClient } from '@/lib/api/client'
+interface Event {personId:string;fullName:string;lunarDay:number;lunarMonth:number;solarDate:string;yearsSinceDeath:number;adjustmentNote?:string}
+interface Calendar {items:Event[];warnings:{personId:string;fullName:string;message:string}[]}
+export const lunarMonthName=(n:number)=>n===1?'Tháng Giêng':n===12?'Tháng Chạp':`Tháng ${n}`
+export function EventsPage(){
+ const [clan,setClan]=useState(''),[year,setYear]=useState(new Date().getFullYear()),[month,setMonth]=useState(''),[branch,setBranch]=useState('')
+ const clans=useQuery({queryKey:['clans'],queryFn:()=>getClans()})
+ const params={year,lunarMonth:month||undefined,branchId:branch||undefined}
+ const calendar=useQuery({queryKey:['f3-calendar',clan,year,month,branch],queryFn:async()=>(await apiClient.get<Calendar>(`/clans/${clan}/anniversaries`,{params})).data,enabled:!!clan})
+ const [error,setError]=useState('')
+ async function download(){try{const r=await apiClient.get(`/clans/${clan}/anniversaries.ics`,{params,responseType:'blob'});const url=URL.createObjectURL(r.data);const a=document.createElement('a');a.href=url;a.download=`lich-gio-${year}.ics`;a.click();setTimeout(()=>URL.revokeObjectURL(url),1000)}catch{setError('Không thể tải lịch. Vui lòng thử lại.')}}
+ const upcoming=calendar.data?.items.filter(x=>{const days=(Date.parse(x.solarDate)-Date.now())/86400000;return days>=0&&days<=30})||[]
+ const event=(x:Event)=><li className="border-b py-4" key={`${x.personId}-${x.solarDate}`}><Link className="underline" to={`/clans/${clan}/persons/${x.personId}`}>{x.fullName}</Link><p>{x.lunarDay}/{x.lunarMonth} ÂL — {x.solarDate} — Giỗ lần {x.yearsSinceDeath}</p><p>{x.adjustmentNote}</p></li>
+ return <section className="space-y-5 text-lg"><h1 className="text-3xl font-bold">Lịch giỗ dòng họ</h1><label>Dòng họ<select className="text-input min-h-14" value={clan} onChange={e=>setClan(e.target.value)}><option value="">Chọn dòng họ</option>{clans.data?.map(c=><option key={c.id} value={c.id}>{c.name}</option>)}</select></label><div className="flex flex-wrap gap-3"><button className="min-h-14" disabled={year<=1800} onClick={()=>setYear(year-1)}>Năm trước</button><label>Năm dương lịch<input className="text-input" type="number" min="1800" max="2199" value={year} onChange={e=>setYear(Number(e.target.value))}/></label><button className="min-h-14" onClick={()=>setYear(new Date().getFullYear())}>Năm nay</button><button className="min-h-14" disabled={year>=2199} onClick={()=>setYear(year+1)}>Năm sau</button><select aria-label="Tháng âm" className="text-input" value={month} onChange={e=>setMonth(e.target.value)}><option value="">Tất cả tháng</option>{Array.from({length:12},(_,i)=><option key={i} value={i+1}>{lunarMonthName(i+1)}</option>)}</select><input className="text-input" placeholder="Mã chi (tùy chọn)" value={branch} onChange={e=>setBranch(e.target.value)}/></div><button className="min-h-14 rounded bg-amber-100 px-4" disabled={!clan} onClick={()=>void download()}>Tải lịch giỗ về điện thoại (.ics)</button>{(calendar.isError||error)&&<p role="alert">{error||'Không thể tải lịch giỗ.'}</p>}{calendar.isLoading&&<p>Đang tải lịch...</p>}<h2 className="text-2xl">Đám giỗ sắp tới (trong 30 ngày)</h2><ul>{upcoming.map(event)}</ul>{Array.from({length:12},(_,i)=>i+1).filter(m=>calendar.data?.items.some(x=>x.lunarMonth===m)).map(m=><section key={m}><h2 className="text-2xl">{lunarMonthName(m)}</h2><ul>{calendar.data?.items.filter(x=>x.lunarMonth===m).map(event)}</ul></section>)}{calendar.data?.warnings.map(w=><aside key={w.personId}><p>{w.fullName}: {w.message}</p><Link className="block min-h-14 underline" to={`/clans/${clan}/persons/${w.personId}`}>Xem hồ sơ / Đề xuất bổ sung</Link></aside>)}</section>
 }
