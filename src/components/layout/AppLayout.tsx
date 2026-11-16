@@ -1,4 +1,4 @@
-﻿import { useState } from 'react'
+import { useState } from 'react'
 import { Link, NavLink, Outlet, useNavigate } from 'react-router-dom'
 import { Menu, X } from 'lucide-react'
 import { clearAuth, getStoredUser } from '@/lib/auth'
@@ -9,6 +9,8 @@ const navigation = [
   { to: '/persons', label: 'Thành viên' },
   { to: '/tree', label: 'Cây phả hệ' },
   { to: '/history', label: 'Lịch sử' },
+  { to: '/import', label: 'Nhập Word / Excel' },
+  { to: '/export', label: 'Xuất phả ký & phả đồ' },
   { to: '/approvals', label: 'Duyệt đề xuất' },
   { to: '/roles', label: 'Phân quyền' },
   { to: '/events', label: 'Sự kiện & giỗ' },

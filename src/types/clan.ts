@@ -3,7 +3,7 @@ export const ClanStatus = {
   Published: 1,
 } as const
 
-export function clanStatusLabel(status: number): string {
+export function clanStatusLabel(status?: number | null): string {
   return status === ClanStatus.Published ? 'Đã công bố' : 'Bản nháp'
 }
 
@@ -11,7 +11,7 @@ export interface Clan {
   id: string
   name: string
   description?: string | null
-  status: number
+  status?: number | null
   publishedAt?: string | null
   createdAt: string
   updatedAt?: string | null
