@@ -1,5 +1,12 @@
-﻿import { PlaceholderPage } from '@/components/ui/PlaceholderPage'
-
+import { useEffect, useState } from 'react'
+import { Link } from 'react-router-dom'
+import { useQuery } from '@tanstack/react-query'
+import { getClans } from '@/lib/api/clans'
+import { searchPeople } from '@/features/f3/api'
 export function PersonsPage() {
-  return <PlaceholderPage title="Thành viên" />
+ const [clan,setClan]=useState(''),[text,setText]=useState(''),[q,setQ]=useState(''),[page,setPage]=useState(1),[generation,setGeneration]=useState(''),[branch,setBranch]=useState(''),[living,setLiving]=useState('')
+ useEffect(()=>{const timer=setTimeout(()=>{setQ(text);setPage(1)},300);return ()=>clearTimeout(timer)},[text])
+ const clans=useQuery({queryKey:['clans'],queryFn:()=>getClans()})
+ const people=useQuery({queryKey:['f3-search',clan,q,page,generation,branch,living],queryFn:()=>searchPeople(clan,{q,page,generation:generation||undefined,branchId:branch||undefined,isLiving:living||undefined}),enabled:!!clan})
+ return <section className="space-y-4 text-lg"><h1 className="text-3xl font-bold">Thành viên dòng họ</h1><label>Dòng họ<select aria-label="Dòng họ" className="text-input min-h-14" value={clan} onChange={e=>{setClan(e.target.value);setPage(1)}}><option value="">Chọn dòng họ</option>{clans.data?.map(c=><option key={c.id} value={c.id}>{c.name}</option>)}</select></label><label>Tìm tên<input className="text-input min-h-14" value={text} onChange={e=>setText(e.target.value)} placeholder="Nhập tên có dấu hoặc không dấu"/></label><div className="flex flex-wrap gap-3"><label>Đời<input className="text-input" type="number" min="1" value={generation} onChange={e=>{setGeneration(e.target.value);setPage(1)}}/></label><label>Mã chi (tùy chọn)<input className="text-input" value={branch} onChange={e=>{setBranch(e.target.value);setPage(1)}}/></label><label>Trạng thái<select className="text-input" value={living} onChange={e=>{setLiving(e.target.value);setPage(1)}}><option value="">Tất cả</option><option value="true">Còn sống</option><option value="false">Đã mất</option></select></label></div>{people.isLoading&&<p>Đang tìm...</p>}{people.isError&&<p role="alert">Không thể tải thành viên. Vui lòng thử lại.</p>}{people.data&&<><p>{people.data.totalCount} thành viên</p><ul className="divide-y">{people.data.items.map(p=><li key={p.id}><Link className="block min-h-14 py-4 underline" to={`/clans/${clan}/persons/${p.id}`}>{p.fullName} — Đời {p.generation} — {p.branchName}</Link></li>)}</ul><button className="min-h-14 px-4" disabled={page<=1} onClick={()=>setPage(page-1)}>Trang trước</button><span>Trang {page}</span><button className="min-h-14 px-4" disabled={page>=people.data.totalPages} onClick={()=>setPage(page+1)}>Trang sau</button></>}</section>
 }
