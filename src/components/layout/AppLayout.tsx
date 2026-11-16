@@ -7,6 +7,7 @@ import { cn } from '@/lib/utils'
 const navigation = [
   { to: '/clans', label: 'Dòng họ' },
   { to: '/persons', label: 'Thành viên' },
+  { to: '/kinship', label: 'Tra xưng hô' },
   { to: '/tree', label: 'Cây phả hệ' },
   { to: '/history', label: 'Lịch sử' },
   { to: '/import', label: 'Nhập Word / Excel' },
