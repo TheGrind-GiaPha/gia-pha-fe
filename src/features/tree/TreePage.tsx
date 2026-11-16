@@ -1,13 +1,15 @@
 ﻿import { useState } from 'react'
-import { useQuery } from '@tanstack/react-query'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { Button } from '@/components/ui/Button'
 import { EmptyState } from '@/components/ui/EmptyState'
 import { Modal } from '@/components/ui/Modal'
 import { PageHeader } from '@/components/ui/PageHeader'
 import { getClans } from '@/lib/api/clans'
 import { getApiErrorMessage } from '@/lib/api/errors'
-import { getTree } from '@/lib/api/persons'
+import { createRoot, getTree } from '@/lib/api/persons'
 import { flattenTree } from '@/lib/personTree'
-import type { Person } from '@/types/person'
+import type { Person, PersonProfileRequest } from '@/types/person'
+import { PersonForm } from '@/features/persons/PersonForm'
 import { TreeCanvas } from './TreeCanvas'
 import { AddChildForm, DeletePersonForm, MergePersonsForm, MovePersonForm } from './TreeForms'
 
@@ -16,8 +18,10 @@ type TreeAction =
   | null
 
 export function TreePage() {
+  const queryClient = useQueryClient()
   const [clanId, setClanId] = useState('')
   const [action, setAction] = useState<TreeAction>(null)
+  const [showCreateRoot, setShowCreateRoot] = useState(false)
 
   const { data: clans } = useQuery({
     queryKey: ['clans'],
@@ -28,6 +32,14 @@ export function TreePage() {
     queryKey: ['tree', clanId],
     queryFn: () => getTree(clanId),
     enabled: Boolean(clanId),
+  })
+
+  const createRootMutation = useMutation({
+    mutationFn: (payload: PersonProfileRequest) => createRoot(clanId, payload),
+    onSuccess: () => {
+      setShowCreateRoot(false)
+      void queryClient.invalidateQueries({ queryKey: ['tree', clanId] })
+    },
   })
 
   const persons = tree ? flattenTree(tree) : []
@@ -69,7 +81,7 @@ export function TreePage() {
       ) : tree ? (
         <div className="space-y-2">
           <p className="text-xs text-stone-500">
-            Kéo để di chuyển, lăn chuột để zoom. Dấu (… ) nghĩa là còn nhân vật chưa đưa vào.
+            Kéo để di chuyển, lăn chuột để zoom. Bấm nút trên mỗi người để thêm con, xem hồ sơ, gộp hoặc xóa.
           </p>
           <TreeCanvas
             tree={tree}
@@ -79,7 +91,13 @@ export function TreePage() {
             onDelete={(person) => setAction({ type: 'delete', person })}
           />
         </div>
-      ) : null}
+      ) : (
+        <EmptyState
+          title="Chưa có người"
+          description="Dòng họ này chưa có ai. Thêm người đầu tiên (thủy tổ) để bắt đầu."
+          action={<Button onClick={() => setShowCreateRoot(true)}>Thêm thủy tổ</Button>}
+        />
+      )}
 
       <Modal open={action !== null} title={modalTitle(action)} onClose={() => setAction(null)}>
         {action?.type === 'addChild' ? (
@@ -106,6 +124,15 @@ export function TreePage() {
             onDone={() => setAction(null)}
           />
         ) : null}
+      </Modal>
+
+      <Modal open={showCreateRoot} title="Thêm thủy tổ" onClose={() => setShowCreateRoot(false)}>
+        <PersonForm
+          submitLabel="Thêm thủy tổ"
+          isLoading={createRootMutation.isPending}
+          error={createRootMutation.isError ? getApiErrorMessage(createRootMutation.error) : null}
+          onSubmit={(payload) => createRootMutation.mutate(payload)}
+        />
       </Modal>
     </div>
   )

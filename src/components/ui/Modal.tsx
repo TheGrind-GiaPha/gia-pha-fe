@@ -15,8 +15,8 @@ export function Modal({ open, title, onClose, children }: ModalProps) {
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       <div className="fixed inset-0 bg-stone-900/30" onClick={onClose} aria-hidden="true" />
 
-      <div className="relative z-10 w-full max-w-md rounded-lg bg-white p-6 shadow-xl">
-        <div className="flex items-center justify-between">
+      <div className="relative z-10 flex max-h-[calc(100vh-2rem)] w-full max-w-lg flex-col overflow-hidden rounded-lg bg-white shadow-xl">
+        <div className="flex shrink-0 items-center justify-between border-b border-stone-200 px-6 py-4">
           <h2 className="text-lg text-stone-900">{title}</h2>
           <button
             type="button"
@@ -28,7 +28,7 @@ export function Modal({ open, title, onClose, children }: ModalProps) {
           </button>
         </div>
 
-        <div className="mt-4">{children}</div>
+        <div className="overflow-y-auto px-6 py-4">{children}</div>
       </div>
     </div>
   )

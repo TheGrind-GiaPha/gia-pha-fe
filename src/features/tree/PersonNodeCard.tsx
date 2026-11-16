@@ -1,6 +1,7 @@
 import type { Node, NodeProps } from '@xyflow/react'
 import { Handle, Position } from '@xyflow/react'
-import { ArrowRight, GitMerge, Plus, Trash2, User } from 'lucide-react'
+import { ArrowRight, Eye, GitMerge, Plus, Trash2, User } from 'lucide-react'
+import { useNavigate } from 'react-router-dom'
 import { resolvePortraitUrl } from '@/lib/api/persons'
 import type { Person } from '@/types/person'
 
@@ -17,6 +18,7 @@ export type PersonFlowNode = Node<PersonNodeData, 'person'>
 
 export function PersonNodeCard({ data }: NodeProps<PersonFlowNode>) {
   const { person, onAddChild, onMove, onMerge, onDelete } = data
+  const navigate = useNavigate()
   const portrait = resolvePortraitUrl(person.portraitUrl)
   const birthYear = person.birthDate?.year
   const deathYear = person.deathDate?.year
@@ -52,6 +54,12 @@ export function PersonNodeCard({ data }: NodeProps<PersonFlowNode>) {
 
       {/* nodrag: bấm nút không kéo node */}
       <div className="nodrag mt-2 flex justify-center gap-0.5 border-t border-stone-100 pt-1.5">
+        <ActionButton
+          label="Xem hồ sơ"
+          onClick={() => navigate(`/persons/${person.id}?clanId=${person.clanId}`)}
+        >
+          <Eye className="h-3.5 w-3.5" />
+        </ActionButton>
         <ActionButton label="Thêm con" onClick={() => onAddChild(person)}>
           <Plus className="h-3.5 w-3.5" />
         </ActionButton>
