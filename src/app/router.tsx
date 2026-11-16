@@ -6,6 +6,7 @@ import { LoginPage } from '@/features/auth/LoginPage'
 import { ClansPage } from '@/features/clans/ClansPage'
 import { EventsPage } from '@/features/events/EventsPage'
 import { ExportPage } from '@/features/export/ExportPage'
+import { HistoryPage } from '@/features/history/HistoryPage'
 import { ImportPage } from '@/features/import/ImportPage'
 import { NotFoundPage } from '@/features/not-found/NotFoundPage'
 import { PersonProfilePage } from '@/features/persons/PersonProfilePage'
@@ -42,6 +43,7 @@ export const router = createBrowserRouter([
       { path: 'persons', element: <PersonsPage /> },
       { path: 'persons/:personId', element: <PersonProfilePage /> },
       { path: 'tree', element: <TreePage /> },
+      { path: 'history', element: <HistoryPage /> },
       { path: 'import', element: <ImportPage /> },
       { path: 'export', element: <ExportPage /> },
       { path: 'approvals', element: <ApprovalsPage /> },

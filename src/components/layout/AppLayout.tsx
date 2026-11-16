@@ -8,6 +8,7 @@ const navigation = [
   { to: '/clans', label: 'Dòng họ' },
   { to: '/persons', label: 'Thành viên' },
   { to: '/tree', label: 'Cây phả hệ' },
+  { to: '/history', label: 'Lịch sử' },
   { to: '/import', label: 'Nhập Word / Excel' },
   { to: '/export', label: 'Xuất phả ký & phả đồ' },
   { to: '/approvals', label: 'Duyệt đề xuất' },

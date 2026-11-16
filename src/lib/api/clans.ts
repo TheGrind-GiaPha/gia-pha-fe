@@ -14,6 +14,11 @@ export async function createClan(payload: CreateClanRequest): Promise<Clan> {
   return data
 }
 
+export async function publishClan(id: string): Promise<Clan> {
+  const { data } = await apiClient.post<Clan>(`/clans/${id}/publish`)
+  return data
+}
+
 export async function deleteClan(id: string): Promise<void> {
   await apiClient.delete(`/clans/${id}`)
 }

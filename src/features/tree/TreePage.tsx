@@ -7,7 +7,8 @@ import { PageHeader } from '@/components/ui/PageHeader'
 import { getClans } from '@/lib/api/clans'
 import { getApiErrorMessage } from '@/lib/api/errors'
 import { createRoot, getTree } from '@/lib/api/persons'
-import type { Person, PersonNode, PersonProfileRequest } from '@/types/person'
+import { flattenTree } from '@/lib/personTree'
+import type { Person, PersonProfileRequest } from '@/types/person'
 import { PersonForm } from '@/features/persons/PersonForm'
 import { TreeCanvas } from './TreeCanvas'
 import { AddChildForm, DeletePersonForm, MergePersonsForm, MovePersonForm } from './TreeForms'
@@ -135,10 +136,6 @@ export function TreePage() {
       </Modal>
     </div>
   )
-}
-
-function flattenTree(node: PersonNode): Person[] {
-  return [node.person, ...node.children.flatMap(flattenTree)]
 }
 
 function modalTitle(action: TreeAction): string {
