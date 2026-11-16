@@ -1,0 +1,16 @@
+import { useState } from 'react'
+import { useSearchParams } from 'react-router-dom'
+import { useQuery } from '@tanstack/react-query'
+import { getClans } from '@/lib/api/clans'
+import { apiClient } from '@/lib/api/client'
+import { searchPeople,myPersonKey } from './api'
+interface Result {fromCallsTo:string;toCallsFrom:string;summary:string;adoptionNote?:string;regionalAliases:string[];isOutOfScope:boolean;outOfScopeMessage?:string;path:{personId:string;fullName:string;stepLabel:string;relationToNext?:string;portraitUrl?:string}[]}
+export function KinshipLookupPage(){
+ const [params]=useSearchParams(),[clan,setClan]=useState(params.get('clanId')||'')
+ const [from,setFrom]=useState(localStorage.getItem(myPersonKey(clan))||''),[to,setTo]=useState(params.get('to')||''),[q,setQ]=useState(''),[lookup,setLookup]=useState<{clan:string;from:string;to:string}|null>(null)
+ const clans=useQuery({queryKey:['clans'],queryFn:()=>getClans()})
+ const people=useQuery({queryKey:['kinship-people',clan,q],queryFn:()=>searchPeople(clan,{q,pageSize:100}),enabled:!!clan})
+ const result=useQuery({queryKey:['kinship',lookup],queryFn:async()=>(await apiClient.get<Result>(`/clans/${lookup!.clan}/kinship`,{params:{from:lookup!.from,to:lookup!.to}})).data,enabled:!!lookup})
+ const select=(label:string,value:string,change:(id:string)=>void)=><label className="block">{label}<select className="text-input min-h-14" value={value} onChange={e=>change(e.target.value)}><option value="">Chọn người</option>{value&&!people.data?.items.some(p=>p.id===value)&&<option value={value}>Người đã chọn</option>}{people.data?.items.map(p=><option key={p.id} value={p.id}>{p.fullName} — Đời {p.generation}</option>)}</select></label>
+ return <section className="space-y-5 text-lg"><h1 className="text-3xl font-bold">Tra xưng hô</h1><label>Dòng họ<select className="text-input min-h-14" value={clan} onChange={e=>{setClan(e.target.value);setFrom(localStorage.getItem(myPersonKey(e.target.value))||'');setTo('');setLookup(null)}}><option value="">Chọn dòng họ</option>{clans.data?.map(c=><option key={c.id} value={c.id}>{c.name}</option>)}</select></label><input aria-label="Tìm người" className="text-input min-h-14" placeholder="Tìm theo tên" value={q} onChange={e=>setQ(e.target.value)}/>{select('Người A (Tôi)',from,id=>{setFrom(id);localStorage.setItem(myPersonKey(clan),id)})}{select('Người B',to,setTo)}<div className="flex flex-wrap gap-4"><button className="min-h-14 rounded bg-amber-100 px-5" onClick={()=>{setFrom(to);setTo(from)}}>Đảo chiều A ↔ B</button><button className="min-h-14 rounded bg-amber-800 px-5 text-white" disabled={!from||!to||!clan} onClick={()=>setLookup({clan,from,to})}>Tra cứu</button></div>{result.isLoading&&<p>Đang tra cứu...</p>}{result.isError&&<p role="alert">Không thể tra cứu quan hệ.</p>}{result.data&&<><p className="text-2xl font-bold">{result.data.isOutOfScope?result.data.outOfScopeMessage:result.data.summary}</p><p>{result.data.adoptionNote}</p><p>{result.data.regionalAliases.join('; ')}</p><ol className="space-y-4">{result.data.path.map((p,i)=><li className="rounded border p-4" key={`${p.personId}-${i}`}>{p.portraitUrl&&<img className="h-20" src={p.portraitUrl} alt=""/>}<strong>{p.fullName}</strong><p>{p.stepLabel}</p><p>{p.relationToNext&&`↓ ${p.relationToNext}`}</p></li>)}</ol></>}</section>
+}

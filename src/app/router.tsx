@@ -10,6 +10,7 @@ import { HistoryPage } from '@/features/history/HistoryPage'
 import { ImportPage } from '@/features/import/ImportPage'
 import { NotFoundPage } from '@/features/not-found/NotFoundPage'
 import { PersonProfilePage } from '@/features/persons/PersonProfilePage'
+import { KinshipLookupPage } from '@/features/f3/KinshipLookupPage'
 import { F3PersonProfilePage } from '@/features/f3/PersonProfilePage'
 import { PersonsPage } from '@/features/persons/PersonsPage'
 import { PublicClansPage } from '@/features/public/PublicClansPage'
@@ -42,6 +43,7 @@ export const router = createBrowserRouter([
       { index: true, element: <Navigate to="/clans" replace /> },
       { path: 'clans', element: <ClansPage /> },
       { path: 'clans/:clanId/persons/:personId', element: <F3PersonProfilePage /> },
+      { path: 'kinship', element: <KinshipLookupPage /> },
       { path: 'persons', element: <PersonsPage /> },
       { path: 'persons/:personId', element: <PersonProfilePage /> },
       { path: 'tree', element: <TreePage /> },
